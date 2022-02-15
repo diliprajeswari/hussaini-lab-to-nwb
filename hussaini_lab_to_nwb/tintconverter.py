@@ -57,7 +57,7 @@ class TintConverter():
         self.set_file = set_file
 
     def write_to_tint(self, recording=None, sorting=None, set_file=None, 
-                      waveforms_center=0.5):
+                      waveforms_center=0.5, return_scaled=False):
         '''Given recording and sorting extractor objects, write appropriate data
         to TINT format (from Axona). Will therefore create .X (tetrode),
         .cut and .clu (spike sorting information) files.
@@ -99,7 +99,7 @@ class TintConverter():
 
         # writes to .X files for each tetrode
         group_ids = recording.get_channel_groups()
-        write_to_tetrode_files(recording, sorting, group_ids, set_file, waveforms_center)
+        write_to_tetrode_files(recording, sorting, group_ids, set_file, waveforms_center, return_scaled)
 
         # writes to .cut and .clu files for each tetrode
         write_unit_labels_to_file(sorting, set_file)
