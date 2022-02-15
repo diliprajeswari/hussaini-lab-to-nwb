@@ -79,7 +79,7 @@ def get_unit_group_ids(sorting):
     return [int(group_id) for group_id in group_ids]
 
 
-def get_waveforms(recording, sorting, unit_ids, header, waveforms_center):
+def get_waveforms(recording, sorting, unit_ids, header, waveforms_center, return_scaled):
     '''Get waveforms for specific tetrode.
 
     Parameters
@@ -106,7 +106,7 @@ def get_waveforms(recording, sorting, unit_ids, header, waveforms_center):
     ms_after = samples_after / (sampling_rate / 1000) + 0.001
 
     group_property_name = get_group_property_name(sorting)
-    
+
     waveforms = st.postprocessing.get_unit_waveforms(
         recording,
         sorting,
@@ -117,7 +117,7 @@ def get_waveforms(recording, sorting, unit_ids, header, waveforms_center):
         ms_before=ms_before,
         ms_after=ms_after,
         return_idxs=False,
-        return_scaled=False,
+        return_scaled=return_scaled,
         dtype=np.int16
     )
 
@@ -219,7 +219,7 @@ def write_tetrode(tetrode_file, all_spikes, all_waveforms, Fs):
     write_tetrode_file_data(tetrode_file, all_spikes, all_waveforms, Fs)
 
 
-def write_to_tetrode_files(recording, sorting, group_ids, set_file, waveforms_center=0.5):
+def write_to_tetrode_files(recording, sorting, group_ids, set_file, waveforms_center=0.5, return_scaled=False):
     '''Get spike samples and waveforms for all tetrodes specified in
     `group_ids`. Note that `group_ids` is 0-indexed, whereas tetrodes are
     1-indexed (so if you want tetrodes 1+2, specify group_ids=[0, 1]).
@@ -252,7 +252,7 @@ def write_to_tetrode_files(recording, sorting, group_ids, set_file, waveforms_ce
         # get spike samples and waveforms of this group / tetrode
         group_unit_ids = [unit_ids[i] for i, gid in enumerate(group_ids) if gid == group_id]
         group_waveforms = get_waveforms(
-            recording, sorting, group_unit_ids, header, waveforms_center)
+            recording, sorting, group_unit_ids, header, waveforms_center, return_scaled)
         group_spike_samples = sorting.get_units_spike_train(unit_ids=group_unit_ids)
 
         # concatenate all spikes and waveforms
