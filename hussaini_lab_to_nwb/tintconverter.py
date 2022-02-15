@@ -57,7 +57,7 @@ class TintConverter():
         self.set_file = set_file
 
     def write_to_tint(self, recording=None, sorting=None, set_file=None, 
-                      waveforms_center=0.5):
+                      waveforms_center=0.5, return_scaled=False):
         '''Given recording and sorting extractor objects, write appropriate data
         to TINT format (from Axona). Will therefore create .X (tetrode),
         .cut and .clu (spike sorting information) files.
@@ -74,6 +74,9 @@ class TintConverter():
             folder and give its new location. The new files will appear there.
         waveforms_center: float
             Controls the waveform peak location in the 1ms TINT cutout (e.g. 0.5: peak is at 0.5)
+        return_scaled: bool
+            Allows scaling the waveforms when required (e.g. True allows custom scaling 
+            of RAW data given by gain - from range 2^16 to 2^8)
 
         Notes
         -----
@@ -99,7 +102,7 @@ class TintConverter():
 
         # writes to .X files for each tetrode
         group_ids = recording.get_channel_groups()
-        write_to_tetrode_files(recording, sorting, group_ids, set_file, waveforms_center)
+        write_to_tetrode_files(recording, sorting, group_ids, set_file, waveforms_center, return_scaled)
 
         # writes to .cut and .clu files for each tetrode
         write_unit_labels_to_file(sorting, set_file)
